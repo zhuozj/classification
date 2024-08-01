@@ -13,7 +13,7 @@ def build_model(pretrained=True, fine_tune=True, num_classes=1):
     model = models.resnet34(weights=ResNet34_Weights.IMAGENET1K_V1)
 
     if fine_tune:
-        print("[INFO] Fine-tuning all layers...")
+        print("[INFO]: Fine-tuning all layers...")
         for params in model.parameters():
             params.requires_grad = True
     elif not fine_tune:

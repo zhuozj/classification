@@ -20,7 +20,7 @@ print(f"Computation device: {device}")
 
 # build model
 model = build_model(
-    pretrained=True, fine_tune=True, num_classes=len(dataset.classes)
+    pretrained=True, fine_tune=False, num_classes=len(dataset.classes)
 ).to(device)
 
 # total parameters and trainable parameters
