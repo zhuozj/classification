@@ -2,7 +2,7 @@ import torch
 import matplotlib
 import matplotlib.pyplot as plt
 
-def save_model(epochs, model, optimizer, criterion):
+def save_model(epochs, model, optimizer, criterion, valid_best_acc):
     """
     Function to save the trained model to disk.
     """
@@ -11,6 +11,7 @@ def save_model(epochs, model, optimizer, criterion):
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'loss': criterion,
+                'valid_best_acc': valid_best_acc
                 }, 'outputs/model.pth')
 
 def save_plots(train_acc, valid_acc, train_loss, valid_loss):
@@ -46,3 +47,4 @@ def save_plots(train_acc, valid_acc, train_loss, valid_loss):
     plt.ylabel('Loss')
     plt.legend()
     plt.savefig('outputs/loss.png')
+    plt.close()

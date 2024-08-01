@@ -20,7 +20,7 @@ print(f"Computation device: {device}")
 
 # build model
 model = build_model(
-    pretrained=True, fine_tune=False, num_classes=len(dataset.classes)
+    pretrained=True, fine_tune=True, num_classes=len(dataset.classes)
 ).to(device)
 
 # total parameters and trainable parameters
@@ -33,6 +33,7 @@ optimizer = optim.Adam(model.parameters(), lr=lr)
 # loss function
 criterion = nn.CrossEntropyLoss()
 
+valid_best_acc = 0
 if args["resume"]:
     print("resume training model")
     checkpoint = torch.load("./outputs/model.pth")
@@ -40,6 +41,8 @@ if args["resume"]:
     model_state_dict = checkpoint["model_state_dict"]
     optimizer_state_dict = checkpoint["optimizer_state_dict"]
     criterion = checkpoint["loss"]
+    valid_best_acc = checkpoint["valid_best_acc"]
+    print(f"valid_best_acc: {valid_best_acc}")
 
     model.load_state_dict(model_state_dict)
 
@@ -100,11 +103,8 @@ def validate(model, testloader, criterion, class_names):
     epoch_loss = valid_running_loss / counter
     epoch_acc = 100. * (valid_running_correct / len(testloader.dataset))
 
-    print('\n')
     for i in range(len(class_names)):
         print(f"Accuracy of class {class_names[i]}: {100 * class_correct[i] / class_total[i]:.2f}%")
-    print('\n')
-
     return epoch_loss, epoch_acc
 
 train_loss, valid_loss = [], []
@@ -127,9 +127,10 @@ for epoch in range(epochs):
     print(f"Validation loss: {valid_epoch_loss:.3f}, \
             Validation acc: {valid_epoch_acc:.2f}%")
     print('-'*50)
+    if valid_epoch_acc > valid_best_acc:
+        valid_best_acc = valid_epoch_acc
+        save_model(epochs, model, optimizer, criterion, valid_best_acc)
+        save_plots(train_acc, valid_acc, train_loss, valid_loss)
 
-save_model(epochs, model, optimizer, criterion)
-
-save_plots(train_acc, valid_acc, train_loss, valid_loss)
 print("training complete")
 

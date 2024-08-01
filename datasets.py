@@ -3,10 +3,11 @@ from torch.utils.data import DataLoader, Subset
 from torchvision import datasets, transforms
 
 valid_split = 0.2
-batch_size = 64
+batch_size = 32
 
 root_dir = "/home/zhuozj/Workspace/03_Dataset/melon17_full/"
 
+"""
 train_transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.RandomHorizontalFlip(p=0.5),
@@ -28,6 +29,23 @@ valid_transform = transforms.Compose([
         std=[0.229, 0.224, 0.225]
     )
 ])
+"""
+
+# 训练集图像预处理：缩放裁剪、图像增强、转 Tensor、归一化
+train_transform = transforms.Compose([transforms.RandomResizedCrop(224),
+                                      transforms.RandomHorizontalFlip(),
+                                      transforms.ToTensor(),
+                                      transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+                                     ])
+
+# 测试集图像预处理-RCTN：缩放、裁剪、转 Tensor、归一化
+valid_transform = transforms.Compose([transforms.Resize(256),
+                                     transforms.CenterCrop(224),
+                                     transforms.ToTensor(),
+                                     transforms.Normalize(
+                                         mean=[0.485, 0.456, 0.406],
+                                         std=[0.229, 0.224, 0.225])
+                                    ])
 
 dataset = datasets.ImageFolder(root_dir, transform=train_transform)
 dataset_test = datasets.ImageFolder(root_dir, transform=valid_transform)
