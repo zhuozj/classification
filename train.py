@@ -130,7 +130,7 @@ for epoch in range(epochs):
     if valid_epoch_acc > valid_best_acc:
         valid_best_acc = valid_epoch_acc
         save_model(epochs, model, optimizer, criterion, valid_best_acc)
-        save_plots(train_acc, valid_acc, train_loss, valid_loss)
+    save_plots(train_acc, valid_acc, train_loss, valid_loss)
 
 print("training complete")
 

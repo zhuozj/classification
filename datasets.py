@@ -32,7 +32,8 @@ valid_transform = transforms.Compose([
 
 # 训练集图像预处理：缩放裁剪、图像增强、转 Tensor、归一化
 train_transform = transforms.Compose([transforms.RandomResizedCrop(224),
-                                      transforms.RandomHorizontalFlip(),
+                                      transforms.RandomHorizontalFlip(p=0.5),
+                                      transforms.RandomVerticalFlip(p=0.5),
                                       transforms.ToTensor(),
                                       transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
                                      ])
@@ -73,9 +74,9 @@ print(f"Total training images: {len(dataset_train)}")
 print(f"Total valid images: {len(dataset_valid)}")
 
 train_loader = DataLoader(
-    dataset_train, batch_size=batch_size, shuffle=True, num_workers=4
+    dataset_train, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True
 )
 
 valid_loader = DataLoader(
-    dataset_valid, batch_size=batch_size, shuffle=False, num_workers=4
+    dataset_valid, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True
 )
